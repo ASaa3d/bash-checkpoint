@@ -38,4 +38,27 @@ s speciall case is echo ehich has 2 versions echi bash builin and external echo 
 13- pwd = echo $PWD , whoami = echo $USER -> examples of variables vs external commands
 14- in bash shell if you have var1="h     w" if you echo $var1 it will be "h w" if yoou need the spacing you shopuld use echo "$var1" which is the best practice , however in other shells like fish echo $var1 = echo "$var1"
 
+15- system info commands : whomai -> user , uname -> sys name , uname -a -> sys name , device name and os version , upwer -e -> show you power supply hw in your system (BAT0 or BAt1) is your battery which you can check status using upower -i path/to/BAT -> used personally to check for battery health buyih a dos used laptop
 
+16- var2=$(upower -e) assign a cvommand output to a var in bash , use set var1 $(upower -e) for fish shell
+
+17- bash syntax check using the bash -n file
+18- $? is return code of bash script but its $status in fish shell
+
+19- use -z flag to check if an argument is empty -> [ -z $1 ] , -n to check its non empty 
+
+20- pipeline to pipe dave in greet.sh -> echo dave | ./greet.sh if greet uses a read arg inside but it doesnt work for input arguments like $1 and so on.
+21- yes commmand to spam y in new lines infintte loop
+22- $@ -> array of all given args
+23- in functions use local keyword to keep the variables local scoped to the function and dont override global ones 
+24 bat is better than cat previewing files in modern highlighted format , same for micro instead of nano
+25- functins support te return argumnent
+26- -f flag tocheck if a file exists
+27- use (()) for math mode like c style for loops
+for ((i=0;i<max;i++));do
+	echo "$i"
+done
+
+28- use 'echo -n' tp not add a new line after each echo 
+29- use echo hello | xxd to see hex characters of hello 
+30-  'echo err >$2' -> stderr , echo text -> stdout
