@@ -27,4 +27,15 @@ also you can use alias -save rm='rm -i' to save in fish config file
 s speciall case is echo ehich has 2 versions echi bash builin and external echo and rm is the same 
 
 11- access builtins in bash using compgen -b and using builtin -n ion fishg shell 
+12 - use translate (tr) to find and replkace a text in string like 
+❯ echo $PATH | tr ' ' '\n'
+/usr/local/sbin
+/usr/local/bin
+/usr/bin
+/usr/bin/site_perl
+/usr/bin/vendor_perl
+/usr/bin/core_perl
+13- pwd = echo $PWD , whoami = echo $USER -> examples of variables vs external commands
+14- in bash shell if you have var1="h     w" if you echo $var1 it will be "h w" if yoou need the spacing you shopuld use echo "$var1" which is the best practice , however in other shells like fish echo $var1 = echo "$var1"
+
 
