@@ -61,4 +61,7 @@ done
 
 28- use 'echo -n' tp not add a new line after each echo 
 29- use echo hello | xxd to see hex characters of hello 
-30-  'echo err >$2' -> stderr , echo text -> stdout
+30- 'echo err >$2' -> stderr , echo text -> stdout  
+31- in case statents you can use cond1 | cond2 ) command;; to oring to equality similar to [[ $i == cond1 || $i == cond2  ]]
+32- in case stmts ;; === break but ;;& === break so even it matched one branch it checks other branches, the unlogical one is the ;& which is no break and implement the below branches without checking may be useful for shrinking the code but not ther best practice 
+33- 
