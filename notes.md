@@ -64,4 +64,52 @@ done
 30- 'echo err >$2' -> stderr , echo text -> stdout  
 31- in case statents you can use cond1 | cond2 ) command;; to oring to equality similar to [[ $i == cond1 || $i == cond2  ]]
 32- in case stmts ;; === break but ;;& === break so even it matched one branch it checks other branches, the unlogical one is the ;& which is no break and implement the below branches without checking may be useful for shrinking the code but not ther best practice 
-33- 
+33- access first element in array ${arr[0]} , lase element index in -1
+34- best practice to loop over an array use quotes and @ sign -> "${arr[@]}"
+35-"${arr[*]}" used to stringify the array elements
+
+36- copy array = mkaing a new empty array and add the old ones items to it
+new_arr=("${arr[@]}")
+37- also += for appending to arr
+new_arr+=("new element")
+38- bash supports sparse arrays so you can declare -> sp_arr=([0]="asd" [1]="adf" [77]="dad")
+39- you can use declare -a array = instead of array =  , also you can declare with no value -> declare -a array.
+40- you can also inxpect an indexed array using decalre -p arr in bash
+41- to get number of elements in an array "${#arr[@]}", to get length of third element "${#arr[2]}"
+42- associative arrays (dicts) is relatively new to bash so it can sometimes not work on older systems so you can wrap it in an if condition and check declaration exit code.
+43- declare -A is necessary to decalre associative arrrays
+44- use ! to acces keys not vvlaues in associative arrays "S{!arr[@]}".
+45- IFS== internal foeld seperator the default seperator used for seperator stringified arrays -> "${arr[*]}",
+but you can change it to smth like IFS=, and now if arr=(e1 e2 e3) then "${arr[*]}"=e1,e2,e3 then you can easilt unset it so it returns to the default using unset IFS.
+you can use $(command) for command substitutiion and nest commnads as you want like:
+-echo $(whoami)
+-echo $(echo $(whoami))
+-echo $(echo $(echo $(whoami)))
+46- command substituatin runs in a subshell using new diff env than what are you are so if you want to use global vars you either pass them or dont use comm sub
+47- in a 2025 bash update a new comm sub is introduced which use your main shell not a sub one its syntax is as follows -> res=${ my_func() } 
+48- '((' in arith expresiion do all sort of math but treat any non-number as 0 
+49- you can see all math supported in bash using help let
+50- in mth expr 0 inside double parantheseis is conddered False or a failure that actually return a code of 1 like (( 2-2 ))
+51- using set -e so that bash exits after an error code returned and having smth like (( 2-2 )) or i=0 , (( i++ )) which is a post increment result in script exiting
+52- bash deals with leading zero integers as octals so trying to eval  i=08 in a math expression will lead to an error
+53 - processs ubstitutu=ion is cool cuz it allows straming input and perform the logic rather than saving it into memory , using <(path/to/file) can make this file input 
+54- using shift arg to shift input args so you can deal with other args without the first one like prg.sh fun1 foo bar baz , saving cmd=$1 then shift then args=("S@")
+55- in for loop if yu dont specify what to loop on the program gonna loop on the input args
+56- on the fly contents eciting view tools like tr old_char new_char and cut -d dlimeter -f field number or desc is super useful 
+/mnt/data/main/BS ❯ echo $PATH | cut -d : -f 1
+/usr/local/sbin
+/mnt/data/main/BS ❯ echo $PATH | cut -d : -f -1
+/usr/local/sbin
+/mnt/data/main/BS ❯ echo $PATH | cut -d : -f 2
+/usr/local/bin
+/mnt/data/main/BS ❯ echo $PATH | cut -d : -f 3
+/usr/bin
+/mnt/data/main/BS ❯ echo $PATH | cut -d : -f 5
+/usr/bin/vendor_perl
+/mnt/data/main/BS ❯ echo $PATH | cut -d : -f -5
+/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl
+/mnt/data/main/BS ❯ echo $PATH | cut -d : -f 1
+/usr/local/sbin
+/mnt/data/main/BS ❯ 
+
+

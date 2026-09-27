@@ -20,6 +20,7 @@ if [[ -f $filename ]];then
 	micro $filename
 else
 	touch $filename
+	echo "#!/bin/bash" > $filename
 	chmod +x $filename
 	micro $filename
 fi
