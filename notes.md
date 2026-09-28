@@ -112,4 +112,31 @@ you can use $(command) for command substitutiion and nest commnads as you want l
 /usr/local/sbin
 /mnt/data/main/BS ❯ 
 
+57- tr is used to replace char , sed is used to translate whole strings 
+/mnt/data/main/BS ❯ cat /etc/passwd | cut -d : -f 1,5,7 | grep sa3d
+sa3d:Ahmed Saad:/bin/bash
+/mnt/data/main/BS ❯ cat /etc/passwd | cut -d : -f 1,5,7 | grep sa3d | sed 's/sa3d/SAAD/'
+SAAD:Ahmed Saad:/bin/bash
+also using sed -e '' -e '' -e '' isa valid for multiple rules , -e stands for expression
+, seperator can be any char not just / so it can sed -e 's#sa3d#saad#'
 
+58-awk works differently 
+</etc/passwd  awk -F: '{ $1 == "sa3d" printf("%s - %s\n",$1,$7) }'
+
+-F to select deilmeter char of the original file then a ' condition  printf' like c
+other usefyul awk tool like sort and uniq  </etc/passwd awk -F: '{ printf("%s - %s\n",$1,$7); }'  | sort | uniq -c
+
+59- wordcount wc can be used to word count lines , words and characters
+ man ls | grep line | wc -l
+ an example of opening manula page of ls getting lines that contain the word file and count the number of these lines
+
+60- find for searching files with -type and -name which take patterns like '*.txt' , -exec which execute as cmd like -exec echo i found {}';' and {} == file name
+
+61- bash -x -> debug mode for bash line by line tracing , debugginh for certain code chunk
+set -x
+code
+set +x
+PS4 -> first char of debugged line defuault='+' but can be changed to anything
+ >PS4="$(date) " bash -x if_else.sh 
+
+ 
