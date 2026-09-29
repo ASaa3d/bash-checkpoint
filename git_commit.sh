@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# test
 changes=$(git diff --staged | head -c 8000)
 if [[ -z $changes ]];then
 	echo "no changes detected">&2
