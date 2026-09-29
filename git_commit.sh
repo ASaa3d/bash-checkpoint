@@ -1,12 +1,12 @@
 #!/bin/bash
 
-changes=$(git diff --staged | head -c 8000)
+changes="$(git diff --staged | head -c 8000)"
 if [[ -z $changes ]];then
-	(echo "no changes detected">&2)
+	echo "no changes detected"
 	exit 1
 fi
 
-commit_msg=$("$changes" |  "/ollama/run" "You are a git commit message generator. Given a diff, output ONLY a commit message, noth
+commit_msg=$("$changes" | "/ollama/run" "You are a git commit message generator. Given a diff, output ONLY a commit message, noth
 ing else — no preamble, no markdown, no explanation.
 
 Format:
