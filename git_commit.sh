@@ -6,8 +6,7 @@ if [[ -z $changes ]];then
 	exit 1
 fi
 
-commit_msg=$("$changes" | "/ollama/run" "You are a git commit message generator. Given a diff, output ONLY a commit message, noth
-ing else — no preamble, no markdown, no explanation.
+commit_msg=$(echo "$changes" | /ollama/run "You are a git commit message generator. Given a diff, output ONLY a commit message, nothing else — no preamble, no markdown, no explanation.
 
 Format:
 - First line: conventional commit format (feat:/fix:/refactor:/docs:/chore:/test:), imperative mood, max 50 chars.
