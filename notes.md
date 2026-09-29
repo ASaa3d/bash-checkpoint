@@ -138,5 +138,29 @@ code
 set +x
 PS4 -> first char of debugged line defuault='+' but can be changed to anything
  >PS4="$(date) " bash -x if_else.sh 
-
- 
+62- -u used to check for undefined vars
+63- more advanced external command is shellcheck -> more professional
+64- in a pipeline command like cmd1 | cmd2 | cmd3 , return code $? is last command(cmd3) return codE
+TO GET RETURN CODES OF ALL commands use PIPESTATUS array like echo "${PIPESTATUS[*]}"
+65- time command when used give you the time taken to perfoem all commands right to it
+66- in bash importing functions from other files can be done using source path/to/file or . path/to/file but the dot syntax can change in other bash types , source is the most common
+67- you can wrap source coommand in an if condition like any other bash command to echo or do smth when sourcing file is not found or you can simply or it with an exit command like source lib/file || exit 1
+68- source -p can be used to hadle directories search like source -p libdir lib1.sh lib2.sh
+67- sourced code calls will be called in any file that sources them
+69- !(return 2>/dev/null) used to check if we are able to return without returning any errors so if we are able to return the result of the (return) is zero , negating it is 1 which is true
+70- you can make function run in paranthesis rather than curly braces and this will make functions run in seperate subshells 
+71- you can also use (func_call()) which will run in sep subshell 
+72- you can also use { func_call; } which run in source shell
+73- one of the benefits of { func(); } is that it supports pipelining {cmd1 | cmd2 | cmd3}
+74- return codes are 8-bit integers limited between 0 to 255
+75- we can redirect stderr goes to stdout -> my_cmd=$(greet 2>&1)
+76- spaces matter
+77- param expansion -> echo "${var^}" -> capitlaize first letter of var ,^d -> capitalize the first d ,^^ -> cap all letters , ^^d ->capitalize all the D's , ^^[da] -> capita;l;ize A's and D's 
+78- echo "${var,}" -> same as ^ but lowercase
+79- ${1:-DEF} first parameter or default name DEF
+80- ${1?err-msg} first param is required so it returns an err-msg if not given but accepts empty string, ${1:?err-msg} refuses empty string
+81- param_expansion can be used instead of tr or sed to replace chars , ${str/old_char/new_char} for only the first char found  or ${str//old_char/new_char} for all matching chars , new_char can be smth like _&_ which eqauls to _old_
+82- substrings -> ${str:0:5} where 0 is strt_pos and 5 is # of chars also we can ${str:(-5)} -> last 5 chars
+83- str_length -> ${#str}
+84- param transformation (@) -> "${str@U}" uppercasing , "${s@Q}" quotes 
+85- 
