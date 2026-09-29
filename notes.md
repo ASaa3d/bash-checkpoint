@@ -160,7 +160,8 @@ TO GET RETURN CODES OF ALL commands use PIPESTATUS array like echo "${PIPESTATUS
 79- ${1:-DEF} first parameter or default name DEF
 80- ${1?err-msg} first param is required so it returns an err-msg if not given but accepts empty string, ${1:?err-msg} refuses empty string
 81- param_expansion can be used instead of tr or sed to replace chars , ${str/old_char/new_char} for only the first char found  or ${str//old_char/new_char} for all matching chars , new_char can be smth like _&_ which eqauls to _old_
-82- substrings -> ${str:0:5} where 0 is strt_pos and 5 is # of chars also we can ${str:(-5)} -> last 5 chars
+82- substrings -> ${str:0:5} where 0 is strt_pos and 5 is # of chars also we can ${str:(-5)} -> last 5 chars , works for arrays too
 83- str_length -> ${#str}
 84- param transformation (@) -> "${str@U}" uppercasing , "${s@Q}" quotes 
-85- 
+85- printf "%s\n" "${arr[@]}" -> echo arr elements line by line
+86- curly braces expansions arr=(etc/{foo,bar}.sh) = (etc/foo.sh  etc/bar.sh) 
