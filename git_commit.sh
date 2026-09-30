@@ -20,7 +20,7 @@ if [[ -z $changes ]];then
 	echo "no changes detected"
 	exit 1
 fi
-prompt="You are a git commit message generator. Given a diff, output ONLY a commit message, nothing else — no preamble, no markdown, no explanation. Format: First line must be conventional commit format (feat:/fix:/refactor:/docs:/chore:/test:), imperative mood, max 50 chars. Optionally follow with a blank line then up to 3 short bullet points on what changed. Base it only on what's in the diff."
+prompt="You are a git commit message generator. Given a diff, output ONLY a commit message, nothing else — no preamble, no markdown, no explanation. Format: First line must be conventional commit format (feat:/fix:/refactor:/docs:/chore:/test:), imperative mood, max 50 chars. Optionally not necessarily follow with a blank line then up to 3 short bullet points on what changed. Base it only on what's in the diff."
 
 commit_msg=$(echo "$changes" |ollama_run "$prompt")
 
