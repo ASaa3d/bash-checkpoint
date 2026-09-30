@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ollama_run(){
+	# use ollama local model to generate commit message then stop it
 	local usr_command="${1:?'No input given'}"
 	local model="qwen2.5-coder:7b"
 	sudo systemctl start ollama
@@ -21,7 +22,7 @@ if [[ -z $changes ]];then
 fi
 prompt="You are a git commit message generator. Given a diff, output ONLY a commit message, nothing else — no preamble, no markdown, no explanation. Format: First line must be conventional commit format (feat:/fix:/refactor:/docs:/chore:/test:), imperative mood, max 50 chars. Optionally follow with a blank line then up to 3 short bullet points on what changed. Base it only on what's in the diff."
 
-commit_msg=$(echo "$changes" | ollama_run "$prompt")
+commit_msg=$(echo "$changes" |ollama_run "$prompt")
 
 git commit -m "$commit_msg"
 git push bs_learn main
