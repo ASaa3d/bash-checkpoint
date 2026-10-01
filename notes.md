@@ -179,3 +179,11 @@ TO GET RETURN CODES OF ALL commands use PIPESTATUS array like echo "${PIPESTATUS
 98- trap func signal can trap any signal from the trap -l signals or debug or exit
 99- ctrl z is used for stopping and sending signals to bg , can access pg process using jobs , run backgrund jobs in backgournd using pg %process_number, fg for running it in forground and kill it using kill %process_num  
 100- mkfifo file_dir used to create pipe file that any number of proccesses can write or consume from it.
+101- $! has the pid of the last created process.
+101- tput helpful for terminal coloring -> tput setaf 9 bold; echo hi;tput sgr0;
+102- use isatty to check if your echo is being printed to aterminal and not forawrded to a log file or other script
+103- calling history give you indexed call history, you can call !call_idx to call a previous command from history, set+H turns this method off.
+104- if PS1 variable is set it means the script is not running interactively -> if [[ -n $PS1 ]]
+105- \cmd avoid cmd aliases like ls vs \ls since alias ls='ls --color=always --group-directories-first'
+106- unset -f func_name used to unset a function
+
