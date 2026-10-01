@@ -609,12 +609,17 @@ bash -n f   bash -x f   shellcheck f   echo "${PIPESTATUS[*]}"
 ```
 
 ---
+## AI Usage
+ 
+AI was used for **only two things** in this repo:
+ 
+1. **Markdown files:** the formatting and organization of `README.md` and `notes.md`, based on the notes and scripts I wrote myself.
+2. **Git commit messages:** generated locally by [`scripts/git_commit.sh`](scripts/git_commit.sh) with **Qwen2.5-Coder 7B** (`qwen2.5-coder:7b`) running through [Ollama](https://ollama.com/). It runs entirely on my machine, and I wrote the script myself.
+All the scripts, the learning, and the practice are my own work.
+
+---
 
 ## Resources
-
-What I learned from:
-
-- [ysap.sh](https://ysap.sh/): the course I took
 - [Bash Scripting Tutorial for Beginners (freeCodeCamp)](https://www.freecodecamp.org/news/bash-scripting-tutorial-linux-shell-script-and-command-line-for-beginners/)
 - [Bash crash course playlist (YouTube)](https://www.youtube.com/playlist?list=PL-my9REMIFtGgiQAXqKPJ5UrLdSkxcLBT)
 - [ANSI escape sequences cheat sheet (GitHub gist)](https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797): for terminal colors and cursor control
