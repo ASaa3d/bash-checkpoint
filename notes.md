@@ -164,4 +164,18 @@ TO GET RETURN CODES OF ALL commands use PIPESTATUS array like echo "${PIPESTATUS
 83- str_length -> ${#str}
 84- param transformation (@) -> "${str@U}" uppercasing , "${s@Q}" quotes 
 85- printf "%s\n" "${arr[@]}" -> echo arr elements line by line
-86- curly braces expansions arr=(etc/{foo,bar}.sh) = (etc/foo.sh  etc/bar.sh) 
+86- curly braces expansions arr=(etc/{foo,bar}.sh) = (etc/foo.sh  etc/bar.sh)
+87- gen multiple files through braces -> touch {foo,bar}.{sh,jpg,txt}
+88- numeric expansion and char expansion -> {1..4} , {a..e} , {1..100..5} , {10..5} , external command is sequrnce seq 1 5 100
+89- printf "$s" can be used if you are sure s is string but best practice is the traditional c way -> printf  '/s' "$s" whih tells printf to format s as string
+90- bash specifc printf flag is -v shich saves printf stament in a variable, printf -v var "hello %s" sa3d so now var="hello sa3d"
+91- bash printf "date is %(%Y/%m/%d %H:%M:%S)T\n" == external command date + %Y/%m/%d %H:%M:%S'
+92- printf "date is %(%Y/%m/%d %H:%M:%S)T\n" -1 is default now time , -2 current seesion start time 
+93- BASH REMATCH is an array of regex matches
+94- mapfile command is equivalent to reading a file line by line and add to array , -t flag to trim the default '<line\n>\n' to 'line'
+95- mapfile -C callback_func -c1 number_of_lines_read_to_call var < file
+96- mapfile is a synonm of readarray they are the same
+97- "" expand the vars while '' not
+98- trap func signal can trap any signal from the trap -l signals or debug or exit
+99- ctrl z is used for stopping and sending signals to bg , can access pg process using jobs , run backgrund jobs in backgournd using pg %process_number, fg for running it in forground and kill it using kill %process_num  
+100- mkfifo file_dir used to create pipe file that any number of proccesses can write or consume from it.
