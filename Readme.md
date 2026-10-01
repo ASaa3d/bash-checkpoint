@@ -7,7 +7,7 @@ This repo has two jobs:
 1. **A revision sheet.** When I forget a rule, I come back here and find it with a short explanation and a working script.
 2. **A proof of skill.** Every topic below has hands-on code, not just notes.
 
-> **Environment:** Linux, Bash 5.x. Some features need a recent Bash (flagged with ⚠️ where it matters). I mostly use Fish as my interactive shell, so I also note where Fish differs.
+> **Environment:** Linux, Bash 5.x. Some features need a recent Bash (flagged with ⚠️ where it matters). I mostly use Bash as my interactive shell.
 
 ---
 
