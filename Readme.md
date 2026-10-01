@@ -1,4 +1,5 @@
 # BASH SCRIPTING THINGY33
 ### test 1213
 asdasd
-testing commit msg
+testing auto commit msg
+testing new commit generation
