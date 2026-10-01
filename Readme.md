@@ -1,5 +1,4 @@
-# BASH SCRIPTING THINGY33
-### test 1213
-asdasd
-testing auto commit msg
-testing new commit generation
+# BASH SCRIPTING THINGY
+
+This is a full bash scripting course made essentially for me a checkpoint when i want to revise bash 
+
