@@ -1,189 +1,616 @@
-1- if you have file3 and file4 and you wrote mv file4 file3 -> originla file3 is deleted and file4 name is changed to file3
-2- if you have file1,file2 and file3 you can use rm file* to delete all
-3- to make it ask interactively to delete each file use -i > rm -i file* -> answer is y(yes) or n(no
-)
-4- alias rm='rm -i' , can be inspected using alias rm for bash , type rm for fish 
-also you can use alias -save rm='rm -i' to save in fish config file
-5- use line after or before with grep to show search result linme with n lines after grep -A1 case_stmt.sh , grep -B1 case_stmt.sh or both usimg -C1 c stands for context
-6- grep -i for case insenestive searching -> grep -i
-7- pattern search using -o and only the matched part will be shown 
- 8- use grep with chained pipline (|) for step by step filtering
-2026-09-25 20:37:48 cat gsch.txt | grep -io d | grep  '^D'
-2026-09-25 20:37:44 cat gsch.txt | grep -io d | grep  '^d'
-2026-09-25 20:37:41 cat gsch.txt | grep -o d | grep  '^d'
-2026-09-25 20:37:37 cat gsch.txt | grep -o d | grep  '^D.*$'
-2026-09-25 20:37:28 cat gsch.txt | grep -i d | grep  '^D.*$'
-2026-09-25 20:37:22 cat gsch.txt | grep -i d | grep  '^D*e$'
-2026-09-25 20:37:19 cat gsch.txt | grep -i d | grep  '^D.*e$'
-2026-09-25 20:37:14 cat gsch.txt | grep -i d | grep  '^D..e$'
-2026-09-25 20:37:06 cat gsch.txt | grep -i d | grep  '^D.e$'
-2026-09-25 20:36:46 cat gsch.txt | grep -i d | grep  'e$'
-2026-09-25 20:36:42 cat gsch.txt | grep -i d | grea  'e$'
-2026-09-25 20:36:22 cat gsch.txt | grep -i d
-2026-09-25 20:35:52 cat gsch.txt | grep 'd'
+# Bash Notes
 
-9- using less and more eithert like less file or cat file | less
-10- for buiuld in to bash functions like history we use 'help' not 'man' becuase its built to shell not external command so which history returns nothing but which history doesnt work
-s speciall case is echo ehich has 2 versions echi bash builin and external echo and rm is the same 
+My raw learning notes, cleaned up. They are kept in the order I learned them and grouped by topic. For the polished, topic-by-topic version with scripts, see the [README](README.md).
 
-11- access builtins in bash using compgen -b and using builtin -n ion fishg shell 
-12 - use translate (tr) to find and replkace a text in string like 
-❯ echo $PATH | tr ' ' '\n'
+## Contents
+
+1. [Files and aliases](#1-files-and-aliases)
+2. [grep and viewing files](#2-grep-and-viewing-files)
+3. [Builtins vs external commands](#3-builtins-vs-external-commands)
+4. [Quoting, system info and variables](#4-quoting-system-info-and-variables)
+5. [Script basics, tests and output](#5-script-basics-tests-and-output)
+6. [case statements](#6-case-statements)
+7. [Arrays](#7-arrays)
+8. [Command substitution and arithmetic](#8-command-substitution-and-arithmetic)
+9. [Process substitution, shift and for loops](#9-process-substitution-shift-and-for-loops)
+10. [Text-processing tools](#10-text-processing-tools)
+11. [Debugging and pipelines](#11-debugging-and-pipelines)
+12. [Sourcing and functions](#12-sourcing-and-functions)
+13. [Parameter expansion](#13-parameter-expansion)
+14. [printf and brace expansion](#14-printf-and-brace-expansion)
+15. [Regex, mapfile and quoting](#15-regex-mapfile-and-quoting)
+16. [Signals, jobs and pipes](#16-signals-jobs-and-pipes)
+17. [Terminal and interactive tricks](#17-terminal-and-interactive-tricks)
+
+> **Fish vs Bash:** I use Fish interactively, so some notes mention where it differs.
+
+---
+
+## 1. Files and aliases
+
+**1. `mv` overwrites.** If `file3` and `file4` exist and I run `mv file4 file3`, the original `file3` is deleted and `file4` is renamed to `file3`.
+
+**2. Wildcards.** With `file1`, `file2` and `file3`, `rm file*` deletes all of them.
+
+**3. Interactive delete.** `rm -i file*` asks about each file. Answer `y` (yes) or `n` (no).
+
+**4. Aliases.** `alias rm='rm -i'` makes `rm` interactive by default.
+- Inspect an alias: `alias rm` in Bash, `type rm` in Fish.
+- Save it permanently in Fish: `alias --save rm='rm -i'` (writes to the Fish config).
+
+---
+
+## 2. grep and viewing files
+
+**5. Context lines.** Show lines around a match (`c` stands for *context*):
+
+```bash
+grep -A1 pattern file    # 1 line After the match
+grep -B1 pattern file    # 1 line Before the match
+grep -C1 pattern file    # 1 line before and after
+```
+
+**6. Case-insensitive search:** `grep -i`.
+
+**7. Only the matching part:** `grep -o` prints just the matched text, not the whole line.
+
+**8. Chain greps with pipes** to filter step by step. My practice run, in order:
+
+```bash
+cat gsch.txt | grep 'd'
+cat gsch.txt | grep -i d
+cat gsch.txt | grep -i d | grep 'e$'
+cat gsch.txt | grep -i d | grep '^D.e$'
+cat gsch.txt | grep -i d | grep '^D..e$'
+cat gsch.txt | grep -i d | grep '^D.*e$'
+cat gsch.txt | grep -i d | grep '^D*e$'
+cat gsch.txt | grep -i d | grep '^D.*$'
+cat gsch.txt | grep -o d | grep '^D.*$'
+cat gsch.txt | grep -o d | grep '^d'
+cat gsch.txt | grep -io d | grep '^d'
+cat gsch.txt | grep -io d | grep '^D'
+```
+
+**9. Paging.** Use `less` or `more`: `less file` or `cat file | less`.
+
+---
+
+## 3. Builtins vs external commands
+
+**10. Builtins use `help`, not `man`.** Functions built into the shell (like `history`) are not external programs, so:
+- use `help history`, not `man history`
+- `which history` finds nothing, because `which` only searches for external programs (`type history` works)
+- special case: `echo` exists in **two versions**, a Bash builtin and an external program (`type -a echo` shows both)
+
+**11. List all builtins:** `compgen -b` in Bash, `builtin -n` in Fish.
+
+**12. `tr` translates characters.** Example: show each `$PATH` entry on its own line:
+
+```bash
+❯ echo $PATH | tr ':' '\n'
 /usr/local/sbin
 /usr/local/bin
 /usr/bin
 /usr/bin/site_perl
 /usr/bin/vendor_perl
 /usr/bin/core_perl
-13- pwd = echo $PWD , whoami = echo $USER -> examples of variables vs external commands
-14- in bash shell if you have var1="h     w" if you echo $var1 it will be "h w" if yoou need the spacing you shopuld use echo "$var1" which is the best practice , however in other shells like fish echo $var1 = echo "$var1"
+```
 
-15- system info commands : whomai -> user , uname -> sys name , uname -a -> sys name , device name and os version , upwer -e -> show you power supply hw in your system (BAT0 or BAt1) is your battery which you can check status using upower -i path/to/BAT -> used personally to check for battery health buyih a dos used laptop
+**13. Variable vs command.** Some things exist as both a variable and a command:
+- `pwd` is equivalent to `echo $PWD`
+- `whoami` is equivalent to `echo $USER`
 
-16- var2=$(upower -e) assign a cvommand output to a var in bash , use set var1 $(upower -e) for fish shell
+---
 
-17- bash syntax check using the bash -n file
-18- $? is return code of bash script but its $status in fish shell
+## 4. Quoting, system info and variables
 
-19- use -z flag to check if an argument is empty -> [ -z $1 ] , -n to check its non empty 
+**14. Quote your variables.** In Bash, with `var1="h     w"`:
 
-20- pipeline to pipe dave in greet.sh -> echo dave | ./greet.sh if greet uses a read arg inside but it doesnt work for input arguments like $1 and so on.
-21- yes commmand to spam y in new lines infintte loop
-22- $@ -> array of all given args
-23- in functions use local keyword to keep the variables local scoped to the function and dont override global ones 
-24 bat is better than cat previewing files in modern highlighted format , same for micro instead of nano
-25- functins support te return argumnent
-26- -f flag tocheck if a file exists
-27- use (()) for math mode like c style for loops
-for ((i=0;i<max;i++));do
-	echo "$i"
+```bash
+echo $var1      # h w            (word splitting collapses the spaces)
+echo "$var1"    # h     w        (spacing preserved: best practice)
+```
+
+In Fish (and some other shells), `echo $var1` and `echo "$var1"` behave the same.
+
+**15. System info commands:**
+
+| Command | What it shows |
+|---|---|
+| `whoami` | current user |
+| `uname` | system name |
+| `uname -a` | system name, device (host) name, kernel/OS version |
+| `upower -e` | lists power devices (`BAT0` or `BAT1` is the battery) |
+| `upower -i /path/to/BAT` | battery details; I use it to check battery health when buying a used laptop |
+
+**16. Store command output in a variable:**
+
+```bash
+var2=$(upower -e)           # Bash
+set var1 (upower -e)        # Fish
+```
+
+---
+
+## 5. Script basics, tests and output
+
+**17. Syntax check:** `bash -n file` checks syntax without running the script.
+
+**18. Exit status:** `$?` holds the return code of the last command (`$status` in Fish).
+
+**19. Empty / non-empty tests:**
+
+```bash
+[ -z "$1" ]    # true if the argument is empty
+[ -n "$1" ]    # true if it is non-empty
+```
+
+**20. Piping into a script.** `echo dave | ./greet.sh` works only if the script reads stdin with `read`. It does **not** fill positional arguments like `$1`.
+
+**21. `yes`** prints `y` on new lines in an infinite loop.
+
+**22. `$@`** holds all the arguments given to the script (use `"$@"` to keep each one intact).
+
+**23. `local`.** Inside functions, declare variables with `local` so they stay scoped to the function and don't override globals.
+
+**24. Nicer tools:** `bat` instead of `cat` (syntax-highlighted preview) and `micro` instead of `nano`.
+
+**25. Functions can return** a status code with `return`.
+
+**26. File test:** `-f` checks that a regular file exists.
+
+**27. Math mode `(( ))`** gives C-style syntax, for example in loops:
+
+```bash
+for ((i=0; i<max; i++)); do
+    echo "$i"
 done
+```
 
-28- use 'echo -n' tp not add a new line after each echo 
-29- use echo hello | xxd to see hex characters of hello 
-30- 'echo err >$2' -> stderr , echo text -> stdout  
-31- in case statents you can use cond1 | cond2 ) command;; to oring to equality similar to [[ $i == cond1 || $i == cond2  ]]
-32- in case stmts ;; === break but ;;& === break so even it matched one branch it checks other branches, the unlogical one is the ;& which is no break and implement the below branches without checking may be useful for shrinking the code but not ther best practice 
-33- access first element in array ${arr[0]} , lase element index in -1
-34- best practice to loop over an array use quotes and @ sign -> "${arr[@]}"
-35-"${arr[*]}" used to stringify the array elements
+**28. `echo -n`** doesn't add a newline after the output.
 
-36- copy array = mkaing a new empty array and add the old ones items to it
+**29. `xxd`** shows raw hex bytes: `echo hello | xxd`.
+
+**30. stdout vs stderr:**
+
+```bash
+echo text        # stdout
+echo err >&2     # stderr
+```
+
+---
+
+## 6. case statements
+
+**31. Multiple patterns** are OR-ed with `|`:
+
+```bash
+case $i in
+    cond1 | cond2) command ;;
+esac
+# similar to: [[ $i == cond1 || $i == cond2 ]]
+```
+
+**32. Terminators:**
+
+| Terminator | Behavior |
+|---|---|
+| `;;` | stop, like `break` |
+| `;;&` | even after a match, keep checking the other branches |
+| `;&` | the odd one: no break, runs the next branch **without checking its pattern**. Can shrink code, but not best practice |
+
+---
+
+## 7. Arrays
+
+**33. Access elements:** `${arr[0]}` is the first element, `${arr[-1]}` the last.
+
+**34. Loop with quotes and `@`** (best practice): `for x in "${arr[@]}"`
+
+**35. Stringify:** `"${arr[*]}"` joins all elements into one string.
+
+**36. Copy an array** by creating a new array from the old elements:
+
+```bash
 new_arr=("${arr[@]}")
-37- also += for appending to arr
+```
+
+**37. Append** with `+=`:
+
+```bash
 new_arr+=("new element")
-38- bash supports sparse arrays so you can declare -> sp_arr=([0]="asd" [1]="adf" [77]="dad")
-39- you can use declare -a array = instead of array =  , also you can declare with no value -> declare -a array.
-40- you can also inxpect an indexed array using decalre -p arr in bash
-41- to get number of elements in an array "${#arr[@]}", to get length of third element "${#arr[2]}"
-42- associative arrays (dicts) is relatively new to bash so it can sometimes not work on older systems so you can wrap it in an if condition and check declaration exit code.
-43- declare -A is necessary to decalre associative arrrays
-44- use ! to acces keys not vvlaues in associative arrays "S{!arr[@]}".
-45- IFS== internal foeld seperator the default seperator used for seperator stringified arrays -> "${arr[*]}",
-but you can change it to smth like IFS=, and now if arr=(e1 e2 e3) then "${arr[*]}"=e1,e2,e3 then you can easilt unset it so it returns to the default using unset IFS.
-you can use $(command) for command substitutiion and nest commnads as you want like:
--echo $(whoami)
--echo $(echo $(whoami))
--echo $(echo $(echo $(whoami)))
-46- command substituatin runs in a subshell using new diff env than what are you are so if you want to use global vars you either pass them or dont use comm sub
-47- in a 2025 bash update a new comm sub is introduced which use your main shell not a sub one its syntax is as follows -> res=${ my_func() } 
-48- '((' in arith expresiion do all sort of math but treat any non-number as 0 
-49- you can see all math supported in bash using help let
-50- in mth expr 0 inside double parantheseis is conddered False or a failure that actually return a code of 1 like (( 2-2 ))
-51- using set -e so that bash exits after an error code returned and having smth like (( 2-2 )) or i=0 , (( i++ )) which is a post increment result in script exiting
-52- bash deals with leading zero integers as octals so trying to eval  i=08 in a math expression will lead to an error
-53 - processs ubstitutu=ion is cool cuz it allows straming input and perform the logic rather than saving it into memory , using <(path/to/file) can make this file input 
-54- using shift arg to shift input args so you can deal with other args without the first one like prg.sh fun1 foo bar baz , saving cmd=$1 then shift then args=("S@")
-55- in for loop if yu dont specify what to loop on the program gonna loop on the input args
-56- on the fly contents eciting view tools like tr old_char new_char and cut -d dlimeter -f field number or desc is super useful 
-/mnt/data/main/BS ❯ echo $PATH | cut -d : -f 1
+```
+
+**38. Sparse arrays** are supported:
+
+```bash
+sp_arr=([0]="asd" [1]="adf" [77]="dad")
+```
+
+**39. `declare -a`.** Use `declare -a array=(...)` instead of plain `array=(...)`. You can also declare with no value: `declare -a array`.
+
+**40. Inspect an array:** `declare -p arr`.
+
+**41. Sizes:**
+
+```bash
+"${#arr[@]}"    # number of elements
+"${#arr[2]}"    # length of the third element
+```
+
+**42. Associative arrays (dictionaries)** are relatively new in Bash and may not work on older systems. Wrap the declaration in an `if` and check its exit code.
+
+**43. `declare -A`** is required to create an associative array.
+
+**44. Keys, not values.** Use `!` to get the keys: `"${!arr[@]}"`.
+
+**45. IFS** (Internal Field Separator) is the separator used when stringifying arrays with `"${arr[*]}"`. Change it, then reset with `unset`:
+
+```bash
+arr=(e1 e2 e3)
+IFS=,
+echo "${arr[*]}"    # e1,e2,e3
+unset IFS           # back to the default
+```
+
+---
+
+## 8. Command substitution and arithmetic
+
+**46. Command substitution** with `$(command)`, and it can be nested:
+
+```bash
+echo $(whoami)
+echo $(echo $(whoami))
+echo $(echo $(echo $(whoami)))
+```
+
+**47. It runs in a subshell** (a separate environment). To use variables from the main script, pass them in or avoid command substitution.
+
+**48. Newer syntax (Bash 5.3, 2025):** a command substitution that runs in the **current shell**, not a subshell:
+
+```bash
+res=${ my_func; }
+```
+
+**49. `(( ))` does all kinds of math** and treats any non-number as `0`.
+
+**50. See all supported math operators:** `help let`.
+
+**51. Zero means failure.** Inside `(( ))`, a result of `0` is considered false, so the command returns exit code `1`. Example: `(( 2-2 ))`.
+
+**52. `set -e` gotcha.** With `set -e` (exit after any command returns an error), things like `(( 2-2 ))`, or `i=0` followed by `(( i++ ))` (post-increment returns the old value, `0`), will make the script exit.
+
+**53. Leading zeros mean octal.** `i=08` in arithmetic causes an error.
+
+---
+
+## 9. Process substitution, shift and for loops
+
+**54. Process substitution** `<(command)` is useful because it streams the data and lets you process it, instead of saving everything to a file or memory first. It presents the command's output like a file:
+
+```bash
+while read -r word; do ...; done < <(grep f file.txt)
+```
+
+**55. `shift`** drops the first argument so you can handle the rest. Example for `prg.sh fun1 foo bar baz`:
+
+```bash
+cmd=$1
+shift
+args=("$@")
+```
+
+**56. `for` without `in`.** If you don't specify what to loop over, `for` loops over the script's arguments.
+
+---
+
+## 10. Text-processing tools
+
+**57. `tr` and `cut`** are great for quickly viewing edited content: `tr old new` replaces characters, `cut -d delimiter -f field` picks fields.
+
+```bash
+❯ echo $PATH | cut -d : -f 1
 /usr/local/sbin
-/mnt/data/main/BS ❯ echo $PATH | cut -d : -f -1
+❯ echo $PATH | cut -d : -f -1        # same: field 1
 /usr/local/sbin
-/mnt/data/main/BS ❯ echo $PATH | cut -d : -f 2
+❯ echo $PATH | cut -d : -f 2
 /usr/local/bin
-/mnt/data/main/BS ❯ echo $PATH | cut -d : -f 3
+❯ echo $PATH | cut -d : -f 3
 /usr/bin
-/mnt/data/main/BS ❯ echo $PATH | cut -d : -f 5
+❯ echo $PATH | cut -d : -f 5
 /usr/bin/vendor_perl
-/mnt/data/main/BS ❯ echo $PATH | cut -d : -f -5
+❯ echo $PATH | cut -d : -f -5        # fields 1 to 5
 /usr/local/sbin:/usr/local/bin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl
-/mnt/data/main/BS ❯ echo $PATH | cut -d : -f 1
-/usr/local/sbin
-/mnt/data/main/BS ❯ 
+```
 
-57- tr is used to replace char , sed is used to translate whole strings 
-/mnt/data/main/BS ❯ cat /etc/passwd | cut -d : -f 1,5,7 | grep sa3d
+**58. `tr` vs `sed`.** `tr` replaces characters; `sed` replaces whole strings.
+
+```bash
+❯ cat /etc/passwd | cut -d : -f 1,5,7 | grep sa3d
 sa3d:Ahmed Saad:/bin/bash
-/mnt/data/main/BS ❯ cat /etc/passwd | cut -d : -f 1,5,7 | grep sa3d | sed 's/sa3d/SAAD/'
+❯ cat /etc/passwd | cut -d : -f 1,5,7 | grep sa3d | sed 's/sa3d/SAAD/'
 SAAD:Ahmed Saad:/bin/bash
-also using sed -e '' -e '' -e '' isa valid for multiple rules , -e stands for expression
-, seperator can be any char not just / so it can sed -e 's#sa3d#saad#'
+```
 
-58-awk works differently 
-</etc/passwd  awk -F: '{ $1 == "sa3d" printf("%s - %s\n",$1,$7) }'
+- Multiple rules: `sed -e '...' -e '...'` (`-e` = expression).
+- The separator can be any character, not just `/`: `sed -e 's#sa3d#saad#'`.
 
--F to select deilmeter char of the original file then a ' condition  printf' like c
-other usefyul awk tool like sort and uniq  </etc/passwd awk -F: '{ printf("%s - %s\n",$1,$7); }'  | sort | uniq -c
+**59. `awk`** works differently. `-F` sets the delimiter of the input; then comes `condition { action }`, with a C-like `printf`:
 
-59- wordcount wc can be used to word count lines , words and characters
- man ls | grep line | wc -l
- an example of opening manula page of ls getting lines that contain the word file and count the number of these lines
+```bash
+</etc/passwd awk -F: '$1 == "sa3d" { printf("%s - %s\n", $1, $7) }'
+```
 
-60- find for searching files with -type and -name which take patterns like '*.txt' , -exec which execute as cmd like -exec echo i found {}';' and {} == file name
+It combines well with `sort` and `uniq`:
 
-61- bash -x -> debug mode for bash line by line tracing , debugginh for certain code chunk
+```bash
+</etc/passwd awk -F: '{ printf("%s - %s\n", $1, $7) }' | sort | uniq -c
+```
+
+**60. `wc` (word count)** counts lines, words and characters.
+
+```bash
+man ls | grep line | wc -l
+```
+
+(Opens the manual page of `ls`, keeps lines containing the word "line", and counts them.)
+
+**61. `find`** searches for files with `-type` and `-name` (patterns like `'*.txt'`), and `-exec` runs a command on each result, where `{}` is the file name:
+
+```bash
+find . -type f -name '*.txt' -exec echo "I found {}" ';'
+```
+
+---
+
+## 11. Debugging and pipelines
+
+**62. Trace mode.** `bash -x` prints every command as it runs, line by line. To debug only a chunk:
+
+```bash
 set -x
-code
+# code to debug
 set +x
-PS4 -> first char of debugged line defuault='+' but can be changed to anything
- >PS4="$(date) " bash -x if_else.sh 
-62- -u used to check for undefined vars
-63- more advanced external command is shellcheck -> more professional
-64- in a pipeline command like cmd1 | cmd2 | cmd3 , return code $? is last command(cmd3) return codE
-TO GET RETURN CODES OF ALL commands use PIPESTATUS array like echo "${PIPESTATUS[*]}"
-65- time command when used give you the time taken to perfoem all commands right to it
-66- in bash importing functions from other files can be done using source path/to/file or . path/to/file but the dot syntax can change in other bash types , source is the most common
-67- you can wrap source coommand in an if condition like any other bash command to echo or do smth when sourcing file is not found or you can simply or it with an exit command like source lib/file || exit 1
-68- source -p can be used to hadle directories search like source -p libdir lib1.sh lib2.sh
-67- sourced code calls will be called in any file that sources them
-69- !(return 2>/dev/null) used to check if we are able to return without returning any errors so if we are able to return the result of the (return) is zero , negating it is 1 which is true
-70- you can make function run in paranthesis rather than curly braces and this will make functions run in seperate subshells 
-71- you can also use (func_call()) which will run in sep subshell 
-72- you can also use { func_call; } which run in source shell
-73- one of the benefits of { func(); } is that it supports pipelining {cmd1 | cmd2 | cmd3}
-74- return codes are 8-bit integers limited between 0 to 255
-75- we can redirect stderr goes to stdout -> my_cmd=$(greet 2>&1)
-76- spaces matter
-77- param expansion -> echo "${var^}" -> capitlaize first letter of var ,^d -> capitalize the first d ,^^ -> cap all letters , ^^d ->capitalize all the D's , ^^[da] -> capita;l;ize A's and D's 
-78- echo "${var,}" -> same as ^ but lowercase
-79- ${1:-DEF} first parameter or default name DEF
-80- ${1?err-msg} first param is required so it returns an err-msg if not given but accepts empty string, ${1:?err-msg} refuses empty string
-81- param_expansion can be used instead of tr or sed to replace chars , ${str/old_char/new_char} for only the first char found  or ${str//old_char/new_char} for all matching chars , new_char can be smth like _&_ which eqauls to _old_
-82- substrings -> ${str:0:5} where 0 is strt_pos and 5 is # of chars also we can ${str:(-5)} -> last 5 chars , works for arrays too
-83- str_length -> ${#str}
-84- param transformation (@) -> "${str@U}" uppercasing , "${s@Q}" quotes 
-85- printf "%s\n" "${arr[@]}" -> echo arr elements line by line
-86- curly braces expansions arr=(etc/{foo,bar}.sh) = (etc/foo.sh  etc/bar.sh)
-87- gen multiple files through braces -> touch {foo,bar}.{sh,jpg,txt}
-88- numeric expansion and char expansion -> {1..4} , {a..e} , {1..100..5} , {10..5} , external command is sequrnce seq 1 5 100
-89- printf "$s" can be used if you are sure s is string but best practice is the traditional c way -> printf  '/s' "$s" whih tells printf to format s as string
-90- bash specifc printf flag is -v shich saves printf stament in a variable, printf -v var "hello %s" sa3d so now var="hello sa3d"
-91- bash printf "date is %(%Y/%m/%d %H:%M:%S)T\n" == external command date + %Y/%m/%d %H:%M:%S'
-92- printf "date is %(%Y/%m/%d %H:%M:%S)T\n" -1 is default now time , -2 current seesion start time 
-93- BASH REMATCH is an array of regex matches
-94- mapfile command is equivalent to reading a file line by line and add to array , -t flag to trim the default '<line\n>\n' to 'line'
-95- mapfile -C callback_func -c1 number_of_lines_read_to_call var < file
-96- mapfile is a synonm of readarray they are the same
-97- "" expand the vars while '' not
-98- trap func signal can trap any signal from the trap -l signals or debug or exit
-99- ctrl z is used for stopping and sending signals to bg , can access pg process using jobs , run backgrund jobs in backgournd using pg %process_number, fg for running it in forground and kill it using kill %process_num  
-100- mkfifo file_dir used to create pipe file that any number of proccesses can write or consume from it.
-101- $! has the pid of the last created process.
-101- tput helpful for terminal coloring -> tput setaf 9 bold; echo hi;tput sgr0;
-102- use isatty to check if your echo is being printed to aterminal and not forawrded to a log file or other script
-103- calling history give you indexed call history, you can call !call_idx to call a previous command from history, set+H turns this method off.
-104- if PS1 variable is set it means the script is not running interactively -> if [[ -n $PS1 ]]
-105- \cmd avoid cmd aliases like ls vs \ls since alias ls='ls --color=always --group-directories-first'
-106- unset -f func_name used to unset a function
+```
 
+`PS4` is the prefix printed before each traced line (default `+`). It can be anything:
+
+```bash
+PS4="$(date) " bash -x if_else.sh          # date evaluated once
+PS4='$(date) ' bash -x if_else.sh          # single quotes: evaluated for every line
+```
+
+**63. `set -u`** (or `bash -u`) errors on undefined variables.
+
+**64. `shellcheck`** is a more advanced external tool for linting scripts. More professional.
+
+**65. Pipeline return codes.** In `cmd1 | cmd2 | cmd3`, `$?` is the return code of the **last** command (`cmd3`). To get the codes of **all** of them, use the `PIPESTATUS` array:
+
+```bash
+echo "${PIPESTATUS[*]}"
+```
+
+**66. `time`** shows how long it took to run the command written right after it.
+
+---
+
+## 12. Sourcing and functions
+
+**67. Importing functions from another file:** `source path/to/file` or `. path/to/file`. The dot form is the POSIX one and can behave differently in other shells; `source` is the most common in Bash.
+
+**68. Handle a missing file** by using `source` in an `if`, or by OR-ing it with `exit`:
+
+```bash
+source lib/file || exit 1
+```
+
+**69. `source -p`** searches a directory path for the file:
+
+```bash
+source -p ./lib lib1.sh
+```
+
+**70. Sourced code runs in the sourcing script.** Top-level calls inside a sourced file are executed by any file that sources it.
+
+**71. Detect whether I'm being sourced:**
+
+```bash
+if ! (return 2>/dev/null); then
+    # running directly, not sourced
+fi
+```
+
+`return` only succeeds in a function or sourced file. If it works (result `0`), we are sourced; negating it with `!` gives "not sourced".
+
+**72. Subshell vs current shell for functions:**
+
+```bash
+f() { ...; }        # runs in the current shell
+f() ( ... )         # parentheses: runs in a separate subshell
+( f )               # calling in parentheses: separate subshell
+{ f; }              # group call: current shell
+```
+
+**73. Groups support pipelines:** `{ cmd1 | cmd2 | cmd3; }`. One benefit of `{ ...; }` is that you can pipe the output of the whole group.
+
+**74. Return codes** are 8-bit integers, limited to 0-255.
+
+**75. Redirect stderr to stdout** (e.g. to capture error messages):
+
+```bash
+my_cmd=$(greet 2>&1)
+```
+
+**76. Spaces matter** in Bash syntax.
+
+---
+
+## 13. Parameter expansion
+
+**77. Uppercase:**
+
+| Syntax | Effect |
+|---|---|
+| `"${var^}"` | capitalize the first letter |
+| `"${var^^}"` | capitalize all letters |
+| `"${var^d}"` | capitalize the first character only if it is `d` |
+| `"${var^^d}"` | capitalize every `d` |
+| `"${var^^[da]}"` | capitalize every `d` and `a` |
+
+**78. Lowercase:** `"${var,}"` and `"${var,,}"` work like `^` and `^^` but lowercase.
+
+**79. Default value:** `${1:-DEF}` is the first parameter, or `DEF` if it is not given.
+
+**80. Required parameter:**
+
+```bash
+${1?err-msg}     # errors if not given, but accepts an empty string
+${1:?err-msg}    # errors if not given OR empty
+```
+
+**81. Replace without `tr` or `sed`:**
+
+```bash
+${str/old/new}     # replace the first match
+${str//old/new}    # replace all matches
+```
+
+`new` can use `&` for the matched text, e.g. `_&_` gives `_old_`.
+
+**82. Substrings:**
+
+```bash
+${str:0:5}      # start position 0, 5 characters
+${str:(-5)}     # last 5 characters
+```
+
+This works for arrays too.
+
+**83. Length:** `${#str}`.
+
+**84. Transformations with `@`:**
+
+```bash
+"${str@U}"    # uppercase
+"${str@Q}"    # quoted
+```
+
+---
+
+## 14. printf and brace expansion
+
+**85. Print array elements line by line:**
+
+```bash
+printf "%s\n" "${arr[@]}"
+```
+
+**86. Brace expansion:**
+
+```bash
+arr=(etc/{foo,bar}.sh)    # same as (etc/foo.sh etc/bar.sh)
+```
+
+**87. Generate many files with braces:**
+
+```bash
+touch {foo,bar}.{sh,jpg,txt}
+```
+
+**88. Numeric and character ranges:**
+
+```bash
+{1..4}   {a..e}   {1..100..5}   {10..5}
+seq 1 5 100        # external command: seq FIRST STEP LAST
+```
+
+**89. `printf` format string.** `printf "$s"` works if you're sure `s` is a plain string, but the best practice is the C way, telling `printf` to format `s` as a string:
+
+```bash
+printf '%s' "$s"
+```
+
+**90. `printf -v`** (Bash-specific) saves the result into a variable instead of printing:
+
+```bash
+printf -v var "hello %s" sa3d    # var="hello sa3d"
+```
+
+**91. Built-in date formatting.** This replaces the external `date +'%Y/%m/%d %H:%M:%S'`:
+
+```bash
+printf "date is %(%Y/%m/%d %H:%M:%S)T\n"
+```
+
+**92. Time argument.** `-1` means the current time (the default), `-2` means the time the shell session started:
+
+```bash
+printf "date is %(%Y/%m/%d %H:%M:%S)T\n" -1
+```
+
+---
+
+## 15. Regex, mapfile and quoting
+
+**93. `BASH_REMATCH`** is the array of regex matches after `[[ $str =~ $regex ]]`.
+
+**94. `mapfile`** reads a file line by line into an array. `-t` trims the trailing newline from each element (`line\n` becomes `line`).
+
+**95. `mapfile` callbacks:**
+
+```bash
+mapfile -C callback_func -c 1 var < file
+# -c = how many lines are read between callback calls
+```
+
+**96. `mapfile` and `readarray`** are synonyms. They are the same command.
+
+**97. Quotes:** `"double"` expands variables, `'single'` does not.
+
+---
+
+## 16. Signals, jobs and pipes
+
+**98. `trap`:**
+
+```bash
+trap func SIGNAL
+```
+
+You can trap any signal from `trap -l`, plus `DEBUG` and `EXIT`.
+
+**99. Job control:**
+- `Ctrl+Z` stops the foreground process and puts it in the background (stopped)
+- `jobs` lists them
+- `bg %N` continues job number `N` in the background
+- `fg %N` brings it to the foreground
+- `kill %N` kills it
+
+**100. Named pipes:** `mkfifo path` creates a pipe file that any number of processes can write to or read from.
+
+**101. `$!`** holds the PID of the last background process.
+
+---
+
+## 17. Terminal and interactive tricks
+
+**102. Colors with `tput`:**
+
+```bash
+tput bold; tput setaf 1; echo hi; tput sgr0    # sgr0 resets the formatting
+```
+
+**103. Is the output a terminal?** Check whether output goes to a terminal and not to a log file or another program. In Bash: `[[ -t 1 ]]`.
+
+**104. History:** `history` shows the indexed list of past commands. Run one again with `!idx`. `set +H` turns this feature off.
+
+**105. Interactive or not:** if the `PS1` variable is set, the shell is **interactive**. In a normal script it is not set:
+
+```bash
+if [[ -n $PS1 ]]; then echo "interactive"; fi
+```
+
+**106. Bypass aliases** with a backslash. If `alias ls='ls --color=always --group-directories-first'`, then `\ls` runs the plain `ls`.
+
+**107. Remove a function:** `unset -f func_name`.
